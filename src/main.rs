@@ -51,15 +51,15 @@ fn main() {
 
         println!("Hash: {:?}", hash);
     } else if entry_point_version == 7 {
-        let user_op_hash = keccak256(&user_op_v6.abi_encode());
-        let ep_address_padded = format!("{:0>64}", entry_point_address.trim_start_matches("0x"));
-        let chain_id_hex = format!("{:x}", chain_id);
-        let chain_id_padded = format!("{:0>64}", chain_id_hex);
-        let concatenated = format!("{}{}{}", user_op_hash, ep_address_padded, chain_id_padded);
-        let concatenated_bytes = hex::decode(concatenated).expect("Decoding hex to byte failed");
-        let hash = keccak256(&concatenated_bytes);
+        // let user_op_hash = keccak256(&user_op_v6.abi_encode());
+        // let ep_address_padded = format!("{:0>64}", entry_point_address.trim_start_matches("0x"));
+        // let chain_id_hex = format!("{:x}", chain_id);
+        // let chain_id_padded = format!("{:0>64}", chain_id_hex);
+        // let concatenated = format!("{}{}{}", user_op_hash, ep_address_padded, chain_id_padded);
+        // let concatenated_bytes = hex::decode(concatenated).expect("Decoding hex to byte failed");
+        // let hash = keccak256(&concatenated_bytes);
 
-        println!("Hash: {:?}", hash);
+        // println!("Hash: {:?}", hash);
     } else {
         panic!("Invalid entry point version");
     }

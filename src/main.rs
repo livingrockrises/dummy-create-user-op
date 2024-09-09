@@ -142,22 +142,21 @@ fn pack_user_operation(user_op: &NewUserOperationInput) -> PackedUserOperation {
     let verification_gas_bytes: [u8; 32] = user_op.verificationGasLimit.to_be_bytes();
     let call_gas_bytes: [u8; 32] = user_op.callGasLimit.to_be_bytes();
 
-    let account_gas_limits = keccak256(
-        &[
-            &verification_gas_bytes[16..], 
-            &call_gas_bytes[16..]
+    let account_gas_limits =
+        [   &call_gas_bytes[16..],
+            &verification_gas_bytes[16..]
         ].concat()
-    );
+    ;
 
     let max_fee_per_gas_bytes: [u8; 32] = user_op.maxFeePerGas.to_be_bytes();
     let max_priority_fee_per_gas_bytes: [u8; 32] = user_op.maxPriorityFeePerGas.to_be_bytes();
 
-    let gas_fees = keccak256(
-        &[
+    let gas_fees = 
+        [
             &max_priority_fee_per_gas_bytes[16..],
             &max_fee_per_gas_bytes[16..]
         ].concat()
-    );
+    ;
 
     let sender_address: FixedBytes<20> = FixedBytes::from(user_op.sender.0);
     let init_code_fixed: FixedBytes<32> = FixedBytes::from(hashed_init_code.0); 
@@ -168,9 +167,9 @@ fn pack_user_operation(user_op: &NewUserOperationInput) -> PackedUserOperation {
         nonce: user_op.nonce,
         initCode: init_code_fixed,
         callData: FixedBytes::from(hashed_call_data.0),
-        accountGasLimits: FixedBytes::from(account_gas_limits.0),
+        accountGasLimits:  FixedBytes::from_slice(account_gas_limits.as_slice()),
         preVerificationGas: user_op.preVerificationGas,
-        gasFees: FixedBytes::from(gas_fees.0),
+        gasFees:  FixedBytes::from_slice(gas_fees.as_slice()),
         paymasterAndData: FixedBytes::from(hashed_paymaster_and_data.0),
     }
 }
@@ -180,7 +179,7 @@ fn main() {
     let entry_point_version = 7;
     let entry_point_address_v6 = "0x5ff137d4b0fdcd49dca30c7cf57e578a026d2789";
     let entry_point_address_v7 = "0x0000000071727De22E5E9d8BAf0edAc6f37da032";
-    let chain_id = 80002;
+    let chain_id = 80002; // 31337 for comparing against hardhat
 
     let user_op_v6 = UserOperation {
         sender: "0xe6dBb5C8696d2E0f90B875cbb6ef26E3bBa575AC".parse().unwrap(),
@@ -198,7 +197,7 @@ fn main() {
     let user_op_v7_input = NewUserOperationInput {
         sender: "0xe6dBb5C8696d2E0f90B875cbb6ef26E3bBa575AC".parse().unwrap(),
         nonce: U256::from(1617),
-        callData: hex::decode("0x0000189a0000000000000000000000003079b249dfde4692d7844aa261f8cf7d927a0da5000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000").unwrap(),
+        callData: hex::decode("0xe9ae5c5300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000007856623d18e54cbbcae340ec449e3c5d1dc0bf60cd0000000000000000000000000000000000000000000000000000000000000000a9059cbb0000000000000000000000001758f42af7026fbbb559dc60ece0de3ef81f665e000000000000000000000000000000000000000000000000000000000000000a0000000000000000").unwrap(),
         callGasLimit: Uint::<256, 4>::from(14177),
         verificationGasLimit: Uint::<256, 4>::from(54701),
         preVerificationGas: Uint::<256, 4>::from(59393),
@@ -220,6 +219,7 @@ fn main() {
         println!("Hash: {:?}", hash);
     } else if entry_point_version == 7 {
         let user_op_v7 = pack_user_operation(&user_op_v7_input);
+        // println!("Packed UserOperation V7 ABI encode: {:?}", hex::encode(user_op_v7.abi_encode()));
         let user_op_v7_hash = keccak256(&user_op_v7.abi_encode());
 
         let ep_address_padded = format!("{:0>64}", entry_point_address_v7.trim_start_matches("0x"));

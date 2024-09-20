@@ -6,6 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-alloy-core = "0.7.6"
+alloy-core = "0.7.7"
 alloy-dyn-abi = "0.7.6"
-alloy-sol-types = "0.7.6"
+alloy-sol-types = "0.7.7"
+primitive-types = "0.12.2"

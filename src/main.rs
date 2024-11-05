@@ -7,6 +7,8 @@ use alloy_sol_types::{sol, SolValue};
 extern crate primitive_types;
 use primitive_types::{H160, H256};
 
+use std::str::FromStr;
+
 // Define Solidity structs using sol! macro
 sol!(
     #[derive(Debug, PartialEq)]
@@ -179,7 +181,7 @@ fn main() {
     let entry_point_version = 7;
     let entry_point_address_v6 = "0x5ff137d4b0fdcd49dca30c7cf57e578a026d2789";
     let entry_point_address_v7 = "0x0000000071727De22E5E9d8BAf0edAc6f37da032";
-    let chain_id = 80002; // 31337 for comparing against hardhat
+    let chain_id = 31337; // 31337 for comparing against hardhat
 
     let user_op_v6 = UserOperation {
         sender: "0xe6dBb5C8696d2E0f90B875cbb6ef26E3bBa575AC".parse().unwrap(),
@@ -195,14 +197,14 @@ fn main() {
     };
 
     let user_op_v7_input = NewUserOperationInput {
-        sender: "0xe6dBb5C8696d2E0f90B875cbb6ef26E3bBa575AC".parse().unwrap(),
-        nonce: U256::from(1617),
-        callData: hex::decode("0xe9ae5c5300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000007856623d18e54cbbcae340ec449e3c5d1dc0bf60cd0000000000000000000000000000000000000000000000000000000000000000a9059cbb0000000000000000000000001758f42af7026fbbb559dc60ece0de3ef81f665e000000000000000000000000000000000000000000000000000000000000000a0000000000000000").unwrap(),
-        callGasLimit: Uint::<256, 4>::from(14177),
-        verificationGasLimit: Uint::<256, 4>::from(54701),
-        preVerificationGas: Uint::<256, 4>::from(59393),
-        maxFeePerGas: U256::from(18000000000u64),
-        maxPriorityFeePerGas: U256::from(17999999985u64),
+        sender: "0xc10035C6c74e8Af054897Ff6092Dc3eC49e2eFc6".parse().unwrap(),
+        nonce: U256::from_str("1083597386547022464258429625247069249537518245239347114964906802352750592").unwrap(),
+        callData: hex::decode("0xe9ae5c53000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000078ba45f9ef3e4fb871113f68217604af3626de8c440000000000000000000000000000000000000000000000000000000000000000a9059cbb0000000000000000000000003c44cdddb6a900fa2b585dd299e03d12fa4293bc0000000000000000000000000000000000000000000000000de0b6b3a76400000000000000000000").unwrap(),
+        callGasLimit: Uint::<256, 4>::from(1500000),
+        verificationGasLimit: Uint::<256, 4>::from(1500000),
+        preVerificationGas: Uint::<256, 4>::from(2000000),
+        maxFeePerGas: U256::from(20000000000u64),
+        maxPriorityFeePerGas: U256::from(10000000000u64),
         ..Default::default() // Fill all other fields with default values
     };
 
@@ -234,4 +236,6 @@ fn main() {
         panic!("Invalid entry point version");
     }
 }
+
+
 

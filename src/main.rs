@@ -105,6 +105,7 @@ fn pack_user_operation(user_op: &NewUserOperationInput) -> PackedUserOperation {
         let mut data = Vec::new();
         data.extend_from_slice(factory_bytes_slice);
         data.extend_from_slice(factory_data_bytes);
+        // println!("init data: {:?}", &data);
     
         // Pass the concatenated data to keccak256
         hashed_init_code = keccak256(&data);
@@ -197,14 +198,19 @@ fn main() {
     };
 
     let user_op_v7_input = NewUserOperationInput {
-        sender: "0xc10035C6c74e8Af054897Ff6092Dc3eC49e2eFc6".parse().unwrap(),
-        nonce: U256::from_str("1083597386547022464258429625247069249537518245239347114964906802352750592").unwrap(),
-        callData: hex::decode("0xe9ae5c53000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000078ba45f9ef3e4fb871113f68217604af3626de8c440000000000000000000000000000000000000000000000000000000000000000a9059cbb0000000000000000000000003c44cdddb6a900fa2b585dd299e03d12fa4293bc0000000000000000000000000000000000000000000000000de0b6b3a76400000000000000000000").unwrap(),
-        callGasLimit: Uint::<256, 4>::from(1500000),
-        verificationGasLimit: Uint::<256, 4>::from(1500000),
-        preVerificationGas: Uint::<256, 4>::from(2000000),
-        maxFeePerGas: U256::from(20000000000u64),
-        maxPriorityFeePerGas: U256::from(10000000000u64),
+        sender: "0x6a7ff0Be04C8a5437c4a6580E8e9A0784e0b8610".parse().unwrap(),
+        nonce: U256::from_str("0x59259f005aec3f1c43b920a4dc21d500617fb37b8db1992c0000000000000000").unwrap(),
+        callData: hex::decode("0xe9ae5c5300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000003400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000").unwrap(),
+        callGasLimit: Uint::<256, 4>::from(0x13880),
+        verificationGasLimit: Uint::<256, 4>::from(0x6a41c),
+        preVerificationGas: Uint::<256, 4>::from(0xddc9),
+        maxFeePerGas: U256::from(0x4da88e31),
+        maxPriorityFeePerGas: U256::from(0x448b9b80),
+        paymasterPostOpGasLimit: Some(U256::from(0x0)),
+        paymasterVerificationGasLimit: Some(U256::from(0x0)),
+        paymaster: None,
+        factory: Some("0xB19db8087aCc0Bcb8Fb559dDF2fD483978EA136F".parse().unwrap()),
+        factoryData: Some(hex::decode("0x0d51f0b7000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb922660000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000").unwrap()),
         ..Default::default() // Fill all other fields with default values
     };
 
@@ -221,7 +227,7 @@ fn main() {
         println!("Hash: {:?}", hash);
     } else if entry_point_version == 7 {
         let user_op_v7 = pack_user_operation(&user_op_v7_input);
-        // println!("Packed UserOperation V7 ABI encode: {:?}", hex::encode(user_op_v7.abi_encode()));
+        println!("Packed UserOperation V7: {:?}", user_op_v7);
         let user_op_v7_hash = keccak256(&user_op_v7.abi_encode());
 
         let ep_address_padded = format!("{:0>64}", entry_point_address_v7.trim_start_matches("0x"));
